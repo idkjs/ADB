@@ -2,6 +2,10 @@ open! Core_kernel
 
 type t = Uuidm.t
 
+let caml_state = Caml.Random.State.make (Array.init 10 ~f:(fun _ -> Random.int Int.max_value))
+
+let random_v4 () = Uuidm.v4_gen caml_state ()
+
 let sexp_of_t x = Sexp.Atom (Uuidm.to_string x)
 
 let t_of_sexp sexp =
