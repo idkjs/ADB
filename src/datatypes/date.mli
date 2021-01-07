@@ -1,6 +1,6 @@
 open! Core_kernel
 
-(** Corresponds to a Postgresql DATE *)
+(** Corresponds to a Postgresql DATE column *)
 type t = Date.t [@@deriving sexp, yojson]
 
 include S.Storable with type t := Date.t and type encoding := Ptime.t

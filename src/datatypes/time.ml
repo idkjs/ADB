@@ -36,6 +36,8 @@ let decode x =
 
 let t = Caqti_type.(custom ~encode ~decode ptime)
 
+let now () = Time_ns.(now () |> to_time_float_round_nearest_microsecond)
+
 let to_ptime_exn x = encode x |> Result.ok_or_failwith
 
 let of_ptime_exn x = decode x |> Result.ok_or_failwith
