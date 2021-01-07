@@ -35,3 +35,7 @@ let decode x =
   |> Result.map ~f:(Time.of_date_ofday ~zone:Time.Zone.utc date)
 
 let t = Caqti_type.(custom ~encode ~decode ptime)
+
+let to_ptime_exn x = encode x |> Result.ok_or_failwith
+
+let of_ptime_exn x = decode x |> Result.ok_or_failwith

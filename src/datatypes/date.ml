@@ -25,3 +25,7 @@ let decode x =
   Result.return @@ Date.(add_days unix_epoch days_epoch)
 
 let t = Caqti_type.(custom ~encode ~decode pdate)
+
+let to_ptime_exn x = encode x |> Result.ok_or_failwith
+
+let of_ptime_exn x = decode x |> Result.ok_or_failwith
