@@ -1,5 +1,6 @@
 (library
   (name datatypes)
+  (public_name ADB.datatypes)
   (libraries
     core_kernel
     caqti

@@ -1,2 +1,3 @@
 (lang dune 2.0)
-(name adb)
+(name ADB)
+(version 1.0.0)

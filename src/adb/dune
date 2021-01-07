@@ -1,5 +1,6 @@
 (library
   (name ADB)
+  (public_name ADB)
   (libraries
     core
     lwt
