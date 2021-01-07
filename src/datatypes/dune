@@ -1,0 +1,14 @@
+(library
+  (name datatypes)
+  (libraries
+    core_kernel
+    caqti
+    ppx_deriving_yojson.runtime
+    uuidm
+    uri
+  )
+  (preprocess (pps
+    ppx_jane
+    ppx_deriving_yojson
+  ))
+)

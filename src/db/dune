@@ -1,0 +1,18 @@
+(library
+  (name ADB)
+  (libraries
+    core
+    lwt
+    lwt.unix
+    caqti
+    caqti-driver-postgresql
+    caqti-lwt
+    ppx_deriving_yojson.runtime
+    uuidm
+  )
+  (preprocess (pps
+    ppx_jane
+    ppx_rapper
+    ppx_deriving_yojson
+  ))
+)
