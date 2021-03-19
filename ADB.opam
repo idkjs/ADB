@@ -14,16 +14,18 @@ homepage: "https://github.com/asemio/ADB"
 doc: "https://github.com/asemio/ADB"
 bug-reports: "https://github.com/asemio/ADB/issues"
 depends: [
-  "ocaml" {>= "4.10.0"}
+  "ocaml" { >= "4.10.0" }
   "dune" { >= "1.9.0"}
 
   "core" { >= "v0.14.0" }
+  "re"
   "lwt" { >= "5.2.0" & < "6.0.0" }
 
   "caqti" { >= "1.0.0" & < "2.0.0" }
   "caqti-lwt"
   "caqti-driver-postgresql"
-  "ppx_rapper" { >= "2.0.0" }
+  "postgresql" { >= "4.0.0" & < "5.0.0" }
+  "ppx_rapper" { >= "2.0.0" & < "3.0.0" }
 
   "ppx_deriving" { >= "4.4.1" }
   "ppx_deriving_yojson" { >= "3.5.2" }

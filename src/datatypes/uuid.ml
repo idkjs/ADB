@@ -1,6 +1,6 @@
 open! Core_kernel
 
-type t = Uuidm.t
+type t = Uuidm.t [@@deriving compare, equal]
 
 let caml_state = Caml.Random.State.make (Array.init 10 ~f:(fun _ -> Random.int Int.max_value))
 

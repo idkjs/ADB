@@ -1,7 +1,7 @@
 open! Core_kernel
 
 (** Corresponds to a Postgresql TIMESTAMP column *)
-type t = Time.t [@@deriving sexp, yojson]
+type t = Time.t [@@deriving sexp, compare, equal, yojson]
 
 include S.Storable with type t := Time.t and type encoding := Ptime.t
 

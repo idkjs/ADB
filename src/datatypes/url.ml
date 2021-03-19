@@ -1,6 +1,6 @@
 open! Core_kernel
 
-type t = Uri.t
+type t = Uri.t [@@deriving compare, equal]
 
 let sexp_of_t json = Sexp.Atom (Uri.to_string json)
 

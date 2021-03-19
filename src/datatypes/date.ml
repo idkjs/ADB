@@ -1,12 +1,6 @@
 open! Core_kernel
 
-type t = Date.t
-
-let sexp_of_t date = Sexp.Atom (Date.to_string date)
-
-let t_of_sexp = function
-| Sexp.Atom s -> Date.of_string s
-| sexp -> failwithf "Invalid serialized Date: %s" (Sexp.to_string sexp) ()
+type t = Date.t [@@deriving sexp, compare, equal]
 
 let to_yojson date = `String (Date.to_string date)
 

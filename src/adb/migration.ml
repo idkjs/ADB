@@ -27,9 +27,9 @@ let last_step_timestamp : unit -> Ptime.t S.stmt =
     SELECT @ptime{COALESCE(MAX(created_at), TO_TIMESTAMP(0))} FROM migrations
   |sql}]
 
-let run pool migrations =
+let run pool here migrations =
   let open Lwt.Syntax in
-  PG.transaction pool ~f:(fun ~conn ->
+  PG.transaction ~no_queue:here pool ~f:(fun ~conn ->
       let* () = PG.exec conn @@ create_migrations_table () in
       let* time = PG.exec conn @@ last_step_timestamp () in
       List.fold migrations ~init:Lwt.return_unit ~f:(fun acc migration ->

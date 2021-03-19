@@ -1,6 +1,6 @@
 open! Core_kernel
 
-type t = Time.t
+type t = Time.t [@@deriving compare, equal]
 
 let sexp_of_t time = Sexp.Atom (Time.to_string time)
 

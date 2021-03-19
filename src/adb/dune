@@ -9,6 +9,7 @@
     caqti-driver-postgresql
     caqti-lwt
     ppx_deriving_yojson.runtime
+    re
     uuidm
   )
   (preprocess (pps

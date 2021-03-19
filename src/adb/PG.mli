@@ -22,16 +22,27 @@ type params = {
   password: string;
   max_pool_size: int;
   ssl: ssl option;
+  logging: bool;
 }
 [@@deriving sexp]
 
-val load_file : ?override_password:string -> Filename.t -> params Lwt.t
+type pool
 
-val connect : params -> (Caqti_lwt.connection, S.combined) Caqti_lwt.Pool.t
+val load_config : ?override_password:string -> Filename.t -> params Lwt.t
+
+val connect : params -> pool
+
+val exec_file : Caqti_lwt.connection -> Filename.t -> unit Lwt.t
+
+val disable_all_triggers : Caqti_lwt.connection -> unit Lwt.t
+
+val enable_all_triggers : Caqti_lwt.connection -> unit Lwt.t
+
+val with_no_triggers : Caqti_lwt.connection -> f:(unit -> 'a Lwt.t) -> 'a Lwt.t
 
 val transaction :
-  ?log_statements:bool ->
-  S.pool ->
+  ?no_queue:Source_code_position.t ->
+  pool ->
   f:(conn:Caqti_lwt.connection -> 'a Or_error.t Lwt.t) ->
   'a Or_error.t Lwt.t
 

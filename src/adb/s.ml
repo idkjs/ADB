@@ -2,12 +2,11 @@ open! Core_kernel
 
 type combined =
   [ `User_error of Error.t
+  | `Mixed_error of Error.t list
   | `Unexpected_exception of Exn.t
   | `Caqti of Caqti_error.t
   | Caqti_error.connect
   ]
-
-type pool = (Caqti_lwt.connection, combined) Caqti_lwt.Pool.t
 
 type 'a stmt = Caqti_lwt.connection -> ('a, Caqti_error.t) Lwt_result.t
 

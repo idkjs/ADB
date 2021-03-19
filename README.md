@@ -73,9 +73,9 @@ let from_json ~json of_yojson =
   Yojson.Safe.from_string json |> of_yojson |> Result.map_error ~f:Error.of_string
 
 let run config_path =
-  let* params = PG.load_file config_path >|= Result.return in
+  let* params = PG.load_config config_path >|= Result.return in
   let pool = PG.connect params in
-  let* () = Migration.run pool migrations in
+  let* () = Migration.run pool [%here] migrations in
 
   let now = Datatypes.Time.now () |> Time.to_date ~zone:Time.Zone.utc in
 
