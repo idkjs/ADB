@@ -120,13 +120,13 @@ We want User_error to be Lwt_results, but all other errors to be exceptions.
 Exceptions are caught by the router, and the server responds with a generic 500 Internal Server Error.
 In the case of Lwt_results, the server responds with a 400 Bad Request and a detailed error message.
 *)
-let do_rollback rollback result error =
-  rollback () |> lift_caqti_error >|= function
+let do_rollback ~disconnect ~rollback result error =
+  rollback () |> lift_caqti_error >>= function
   (* Sucessful rollback: pass the original error... *)
-  | Ok () -> result
+  | Ok () -> Lwt.return result
   | Error err2 ->
-    (* Failure to rollback: append to the original error... *)
-    lift_mixed_errors [ error; err2 ]
+    (* Failure to rollback: scrap the connection, append to the original error... *)
+    disconnect () >|= fun () -> lift_mixed_errors [ error; err2 ]
 
 let do_transaction { pool; log_statements; _ } ~f () =
   Caqti_lwt.Pool.use
@@ -147,18 +147,19 @@ let do_transaction { pool; log_statements; _ } ~f () =
           f ~conn |> lift_user_error)
         lift_unexpected_exn
       >>= function
-      (* BUSINESS LOGIC SUCCESS: COMMIT OR RAISE *)
+      (* BUSINESS LOGIC SUCCESS: COMMIT OR ROLLBACK *)
       | Ok _ as res -> (
         M.commit () |> lift_caqti_error >>= function
         | Ok () -> Lwt.return res
-        | Error err1 as res -> do_rollback M.rollback res err1
+        | Error err1 as res -> do_rollback ~disconnect:M.disconnect ~rollback:M.rollback res err1
       )
       (* ERROR: ROLLBACK *)
-      | Error err1 as res -> do_rollback M.rollback res err1)
+      | Error err1 as res -> do_rollback ~disconnect:M.disconnect ~rollback:M.rollback res err1)
     pool
   |> Lwt_result.map_err (function
        | `User_error err -> err
-       | x -> combined_to_error x |> Error.raise)
+       | `Unexpected_exception exn -> raise exn
+       | x -> combined_to_error x)
 
 let transaction ?no_queue ({ params = { max_pool_size; _ }; _ } as p) ~f =
   match no_queue with
