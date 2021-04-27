@@ -173,6 +173,8 @@ let transaction ?no_queue ({ params = { max_pool_size; _ }; _ } as p) ~f =
         SCPT.decr ~remove_if_zero:true p.current_transactions here;
         Lwt.return_unit)
 
+let drain { pool; _ } = Caqti_lwt.Pool.drain pool
+
 let connection_uri { host; dbname = path; user; password; ssl; max_pool_size = _; logging = _ } =
   let host, port =
     match host with
