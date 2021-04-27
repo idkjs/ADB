@@ -120,13 +120,11 @@ We want User_error to be Lwt_results, but all other errors to be exceptions.
 Exceptions are caught by the router, and the server responds with a generic 500 Internal Server Error.
 In the case of Lwt_results, the server responds with a 400 Bad Request and a detailed error message.
 *)
-let do_rollback ~disconnect ~rollback result error =
-  rollback () |> lift_caqti_error >>= function
+let do_rollback ~rollback result error =
+  rollback () |> lift_caqti_error >|= function
   (* Sucessful rollback: pass the original error... *)
-  | Ok () -> Lwt.return result
-  | Error err2 ->
-    (* Failure to rollback: scrap the connection, append to the original error... *)
-    disconnect () >|= fun () -> lift_mixed_errors [ error; err2 ]
+  | Ok () -> result
+  | Error err2 -> lift_mixed_errors [ error; err2 ]
 
 let do_transaction { pool; log_statements; _ } ~f () =
   Caqti_lwt.Pool.use
@@ -137,13 +135,13 @@ let do_transaction { pool; log_statements; _ } ~f () =
         (* Lift exceptions into Lwt_result of "combined error" so they rollback too *)
           (fun () ->
           let open Lwt_result.Syntax in
+          let* () = M.start () |> lift_caqti_error in
           let* () =
             (* TODO: revisit once we have log levels *)
             if log_statements
             then enable_statement_logging conn |> lift_caqti_error
             else Lwt_result.return ()
           in
-          let* () = M.start () |> lift_caqti_error in
           f ~conn |> lift_user_error)
         lift_unexpected_exn
       >>= function
@@ -151,10 +149,10 @@ let do_transaction { pool; log_statements; _ } ~f () =
       | Ok _ as res -> (
         M.commit () |> lift_caqti_error >>= function
         | Ok () -> Lwt.return res
-        | Error err1 as res -> do_rollback ~disconnect:M.disconnect ~rollback:M.rollback res err1
+        | Error err1 as res -> do_rollback ~rollback:M.rollback res err1
       )
       (* ERROR: ROLLBACK *)
-      | Error err1 as res -> do_rollback ~disconnect:M.disconnect ~rollback:M.rollback res err1)
+      | Error err1 as res -> do_rollback ~rollback:M.rollback res err1)
     pool
   |> Lwt_result.map_err (function
        | `User_error err -> err
