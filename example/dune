@@ -1,0 +1,9 @@
+(executables
+ (names example)
+ (libraries ADB ADB.datatypes ppx_rapper_lwt uuidm ppx_deriving_yojson)
+ (preprocess
+  (pps ppx_jane ppx_rapper ppx_deriving_yojson)))
+
+(alias
+ (name runtest)
+ (deps example.exe))
