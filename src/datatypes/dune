@@ -4,7 +4,6 @@
   (libraries
     core_kernel
     caqti
-    ppx_deriving_yojson.runtime
     uuidm
     uri
   )

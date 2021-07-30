@@ -1,0 +1,38 @@
+opam-version: "2.0"
+name: "ADB"
+version: "1.4.2"
+synopsis: "Asemio's DB lib"
+maintainer: "support@asemio.com"
+authors: "Asemio"
+license: "MIT"
+build: [
+  ["dune" "subst"] {pinned}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+depends: [
+  "caqti" {= "1.6.0"}
+  "caqti-driver-postgresql" {= "1.6.0"}
+  "caqti-lwt" {= "1.6.0"}
+  "core" {= "v0.14.1"}
+  "core_kernel" {= "v0.14.1"}
+  "dune" {= "2.9.0"}
+  "lwt" {= "5.4.1"}
+  "ocaml-lsp-server" {= "dev" & dev}
+  "ppx_deriving_yojson" {= "3.6.1"}
+  "ppx_jane" {= "v0.14.0"}
+  "ppx_rapper" {= "3.0.0"}
+  "ppx_rapper_lwt" {= "3.0.0"}
+  "re" {= "1.9.0"}
+  "uri" {= "4.2.0"}
+  "uuidm" {= "0.9.7"}
+]
