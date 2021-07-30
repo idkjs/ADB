@@ -88,8 +88,8 @@ let run config_path =
           @@ [%rapper
                execute
                  {sql|
-INSERT INTO "testdates" (id, foo) VALUES (%Datatypes.Uuid{key}, %Datatypes.Date{now})
-        |sql}]
+                  INSERT INTO "testdates" (id, foo) VALUES (%Datatypes.Uuid{key}, %Datatypes.Date{now})
+                |sql}]
                ~now ~key:(Datatypes.Uuid.random_v4 ())
         in
         (* Example 2: INSERT, dynamically. This also allows bulk inserting a variable number of rows. *)
@@ -106,10 +106,10 @@ INSERT INTO "testdates" (id, foo) VALUES (%Datatypes.Uuid{key}, %Datatypes.Date{
           @@ [%rapper
                execute
                  {sql|
-INSERT INTO "testdates" (
-            SELECT * FROM JSONB_POPULATE_RECORDSET(NULL::"testdates", %string{json}) X
-            )
-            |sql}]
+                  INSERT INTO "testdates" (
+                  SELECT * FROM JSONB_POPULATE_RECORDSET(NULL::"testdates", %string{json}) X
+                  )
+                |sql}]
                ~json
         in
         (* Example 3: SELECT, manually *)
@@ -118,8 +118,8 @@ INSERT INTO "testdates" (
           @@ [%rapper
                get_many
                  {sql|
-SELECT @Datatypes.Date{foo}, @Datatypes.Uuid{id} FROM testdates
-            |sql}
+                    SELECT @Datatypes.Date{foo}, @Datatypes.Uuid{id} FROM testdates
+                |sql}
                  function_out]
                Testdate.Fields.create ()
         in
@@ -129,10 +129,10 @@ SELECT @Datatypes.Date{foo}, @Datatypes.Uuid{id} FROM testdates
           @@ [%rapper
                get_many
                  {sql|
-SELECT ROW_TO_JSON(DATA) AS @string{json} FROM (
-  SELECT id, NOW()::DATE AS foo FROM testdates
-) DATA
-|sql}
+                  SELECT ROW_TO_JSON(DATA) AS @string{json} FROM (
+                    SELECT id, NOW()::DATE AS foo FROM testdates
+                  ) DATA
+                |sql}
                  function_out]
                (from_json [%of_yojson: Testdate.t])
                ()
