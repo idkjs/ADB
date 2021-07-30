@@ -38,11 +38,11 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
   @@ [%rapper
        execute
          {sql|
-CREATE TABLE IF NOT EXISTS "testdates" (
-  "id" UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
-  "foo" DATE NOT NULL
-)
-|sql}]
+          CREATE TABLE IF NOT EXISTS "testdates" (
+            "id" UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+            "foo" DATE NOT NULL
+          )
+          |sql}]
        ()
 
 ```
